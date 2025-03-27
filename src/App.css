@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+.task-container {
+  display: flex;
+  background-color: gray;
+  border: 2px red solid;
+}
