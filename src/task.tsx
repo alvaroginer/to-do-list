@@ -1,4 +1,4 @@
-interface TaskData {
+export interface TaskData {
   id?: number;
   text: string;
   isCompleted: boolean;
