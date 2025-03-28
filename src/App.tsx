@@ -1,50 +1,78 @@
 import { useState } from "react";
-import { Task } from "./task";
-import type { TaskData } from "./task";
 import "./App.css";
+import { TaskData } from "./task";
 
-//Hacer una barra de búsqueda con preevntdefaul extraer su contenido y con el contenido crear una tarea cuando se pulse en un botón
-// si el input está vacío el botón debe estar disabled
+// interface Task {
+//   text: string;
+//   id: number;
+//   isCompleted: boolean;
+// }
 
 function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
-  const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState("");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIsCompleted = (task: TaskData) => {
+    setTaskList(
+      taskList.map((t) => {
+        if (t.id === task.id) {
+          return { ...task, isCompleted: !task.isCompleted };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleInputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (inputValue.trim() === "") return;
-    setTaskList([...taskList, { text: inputValue, isCompleted }]);
+    const newTask: TaskData = {
+      text: inputValue,
+      id: Date.now(),
+      isCompleted: false,
+    };
+    setTaskList([...taskList, newTask]);
     setInputValue("");
+  };
+
+  const handleDelete = (task: TaskData) => {
+    setTaskList(taskList.filter((t) => t.id !== task.id));
   };
 
   console.log(taskList);
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form id="task-form" onSubmit={handleInputSubmit}>
+        <h1>To-do list</h1>
         <input
           type="text"
-          placeholder="Añadir tarea"
+          placeholder="Añade una tarea"
           value={inputValue}
-          onInput={handleInputChange}
+          onChange={handleInput}
         />
-        <button type="submit" disabled={!inputValue.trim()}>
-          Añadir
-        </button>
+        <button type="submit">Añadir Task</button>
       </form>
       {taskList.map((task, index) => {
         return (
-          <Task
-            text={task.text}
-            id={index}
-            isCompleted={isCompleted}
-            key={index + 1}
-          />
+          <div
+            key={index + task.id}
+            className="task-container"
+            id={task.id.toString()}
+          >
+            <input
+              type="checkbox"
+              checked={task.isCompleted}
+              onClick={() => handleIsCompleted(task)}
+            />
+            <p>{task.text}</p>
+            <button onClick={() => handleDelete(task)}>Eliminar</button>
+          </div>
         );
       })}
     </>

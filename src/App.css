@@ -43,6 +43,7 @@
 
 .task-container {
   display: flex;
+  justify-content: space-between;
   background-color: gray;
   border: 2px red solid;
 }

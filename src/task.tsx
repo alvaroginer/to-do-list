@@ -1,21 +1,24 @@
 export interface TaskData {
-  id?: number;
+  id: number;
   text: string;
   isCompleted: boolean;
 }
 
-export const Task = (props: TaskData) => {
-  const { text, id, isCompleted = false } = props;
+export const Task = (props: { task: TaskData; index: number }) => {
+  const { task, index } = props;
   return (
-    <div key={id} className="task-container">
+    <div
+      key={index + task.id}
+      className="task-container"
+      id={task.id.toString()}
+    >
       <input
         type="checkbox"
-        name="checked"
-        checked={isCompleted}
-        onChange={() => !isCompleted}
+        checked={task.isCompleted}
+        onClick={() => handleIsCompleted(task)}
       />
-      <p>{text}</p>
-      <button>Eliminar</button>
+      <p>{task.text}</p>
+      <button onClick={() => handleDelete(task)}>Eliminar</button>
     </div>
   );
 };
