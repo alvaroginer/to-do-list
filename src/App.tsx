@@ -1,28 +1,10 @@
 import { useState } from "react";
 import "./App.css";
-import { TaskData } from "./task";
-
-// interface Task {
-//   text: string;
-//   id: number;
-//   isCompleted: boolean;
-// }
+import { Task, TaskData } from "./task";
 
 function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
   const [inputValue, setInputValue] = useState("");
-
-  const handleIsCompleted = (task: TaskData) => {
-    setTaskList(
-      taskList.map((t) => {
-        if (t.id === task.id) {
-          return { ...task, isCompleted: !task.isCompleted };
-        } else {
-          return task;
-        }
-      })
-    );
-  };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -40,10 +22,6 @@ function App() {
     setInputValue("");
   };
 
-  const handleDelete = (task: TaskData) => {
-    setTaskList(taskList.filter((t) => t.id !== task.id));
-  };
-
   console.log(taskList);
 
   return (
@@ -59,21 +37,7 @@ function App() {
         <button type="submit">Añadir Task</button>
       </form>
       {taskList.map((task, index) => {
-        return (
-          <div
-            key={index + task.id}
-            className="task-container"
-            id={task.id.toString()}
-          >
-            <input
-              type="checkbox"
-              checked={task.isCompleted}
-              onClick={() => handleIsCompleted(task)}
-            />
-            <p>{task.text}</p>
-            <button onClick={() => handleDelete(task)}>Eliminar</button>
-          </div>
-        );
+        return <Task index={index} task={task} setTaskList={setTaskList} />;
       })}
     </>
   );

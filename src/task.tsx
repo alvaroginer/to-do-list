@@ -4,8 +4,31 @@ export interface TaskData {
   isCompleted: boolean;
 }
 
-export const Task = (props: { task: TaskData; index: number }) => {
-  const { task, index } = props;
+interface TaskProps {
+  task: TaskData;
+  index: number;
+  setTaskList: React.Dispatch<React.SetStateAction<TaskData[]>>;
+}
+
+export const Task = (props: TaskProps) => {
+  const { task, index, setTaskList } = props;
+
+  const handleDelete = (task: TaskData) => {
+    setTaskList((prevTaskList) => prevTaskList.filter((t) => t.id !== task.id));
+  };
+
+  const handleIsCompleted = (task: TaskData) => {
+    setTaskList((prevTaskList) =>
+      prevTaskList.map((t) => {
+        if (t.id === task.id) {
+          return { ...t, isCompleted: !task.isCompleted };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
+
   return (
     <div
       key={index + task.id}
@@ -15,7 +38,7 @@ export const Task = (props: { task: TaskData; index: number }) => {
       <input
         type="checkbox"
         checked={task.isCompleted}
-        onClick={() => handleIsCompleted(task)}
+        onChange={() => handleIsCompleted(task)}
       />
       <p>{task.text}</p>
       <button onClick={() => handleDelete(task)}>Eliminar</button>
