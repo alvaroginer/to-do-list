@@ -22,6 +22,22 @@ function App() {
     setInputValue("");
   };
 
+  const handleDelete = (task: TaskData) => {
+    setTaskList(taskList.filter((t) => t.id !== task.id));
+  };
+
+  const handleIsCompleted = (task: TaskData) => {
+    setTaskList(
+      taskList.map((t) => {
+        if (t.id === task.id) {
+          return { ...t, isCompleted: !task.isCompleted };
+        } else {
+          return task;
+        }
+      })
+    );
+  };
+
   console.log(taskList);
 
   return (
@@ -37,7 +53,14 @@ function App() {
         <button type="submit">Añadir Task</button>
       </form>
       {taskList.map((task, index) => {
-        return <Task index={index} task={task} setTaskList={setTaskList} />;
+        return (
+          <Task
+            index={index}
+            task={task}
+            onDelete={handleDelete}
+            onCompleted={handleIsCompleted}
+          />
+        );
       })}
     </>
   );
