@@ -5,6 +5,11 @@ import { Task, TaskData } from "./task";
 function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [searchBarValue, setSearchBarValue] = useState<string>("");
+
+  const handleSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchBarValue(e.target.value);
+  };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -42,6 +47,11 @@ function App() {
 
   return (
     <>
+      <input
+        type="text"
+        onChange={handleSearchBarValue}
+        placeholder="Search the tasks here..."
+      />
       <form id="task-form" onSubmit={handleInputSubmit}>
         <h1>To-do list</h1>
         <input
@@ -52,16 +62,33 @@ function App() {
         />
         <button type="submit">Añadir Task</button>
       </form>
-      {taskList.map((task, index) => {
-        return (
-          <Task
-            index={index}
-            task={task}
-            onDelete={handleDelete}
-            onCompleted={handleIsCompleted}
-          />
-        );
-      })}
+      {searchBarValue === ""
+        ? taskList.map((task: TaskData, index: number) => {
+            return (
+              <Task
+                key={index + 1}
+                index={index}
+                task={task}
+                onDelete={handleDelete}
+                onCompleted={handleIsCompleted}
+              />
+            );
+          })
+        : taskList.filter((task: TaskData, index: number) => {
+            if (task.text.includes(searchBarValue)) {
+              return (
+                <Task
+                  key={index + 1}
+                  index={index}
+                  task={task}
+                  onDelete={handleDelete}
+                  onCompleted={handleIsCompleted}
+                />
+              );
+            } else {
+              <p>No results found</p>;
+            }
+          })}
     </>
   );
 }
