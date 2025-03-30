@@ -45,6 +45,10 @@ function App() {
 
   console.log(taskList);
 
+  const filteredTasks = taskList.filter((task) =>
+    task.text.toLowerCase().includes(searchBarValue.toLowerCase())
+  );
+
   return (
     <>
       <input
@@ -62,33 +66,31 @@ function App() {
         />
         <button type="submit">Añadir Task</button>
       </form>
-      {searchBarValue === ""
-        ? taskList.map((task: TaskData, index: number) => {
-            return (
-              <Task
-                key={index + 1}
-                index={index}
-                task={task}
-                onDelete={handleDelete}
-                onCompleted={handleIsCompleted}
-              />
-            );
-          })
-        : taskList.filter((task: TaskData, index: number) => {
-            if (task.text.includes(searchBarValue)) {
-              return (
-                <Task
-                  key={index + 1}
-                  index={index}
-                  task={task}
-                  onDelete={handleDelete}
-                  onCompleted={handleIsCompleted}
-                />
-              );
-            } else {
-              <p>No results found</p>;
-            }
-          })}
+      {searchBarValue === "" ? (
+        taskList.map((task: TaskData, index: number) => {
+          return (
+            <Task
+              key={index + 1}
+              index={index}
+              task={task}
+              onDelete={handleDelete}
+              onCompleted={handleIsCompleted}
+            />
+          );
+        })
+      ) : filteredTasks.length > 0 ? (
+        filteredTasks.map((task, index) => (
+          <Task
+            key={index + 1}
+            index={index}
+            task={task}
+            onDelete={handleDelete}
+            onCompleted={handleIsCompleted}
+          />
+        ))
+      ) : (
+        <p>No results found</p>
+      )}
     </>
   );
 }
