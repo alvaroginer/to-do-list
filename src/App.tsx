@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Task, TaskData } from "./task";
 
@@ -6,6 +6,22 @@ function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [searchBarValue, setSearchBarValue] = useState<string>("");
+  const [filteredTasks, setFilteredTasks] = useState<TaskData[]>([]);
+  const [filterActive, setFilterActive] = useState<boolean>(false);
+
+  useEffect(() => {
+    const newFilteredTasks: TaskData[] = taskList.filter((task) =>
+      task.text.toLowerCase().includes(searchBarValue.toLowerCase())
+    );
+
+    setFilteredTasks(newFilteredTasks);
+
+    if (filterActive === true) {
+      setFilteredTasks((currentFilterTasks) =>
+        currentFilterTasks.filter((task) => task.isCompleted === true)
+      );
+    }
+  }, [searchBarValue, taskList, filterActive]);
 
   const handleSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchBarValue(e.target.value);
@@ -43,12 +59,6 @@ function App() {
     );
   };
 
-  console.log(taskList);
-
-  const filteredTasks = taskList.filter((task) =>
-    task.text.toLowerCase().includes(searchBarValue.toLowerCase())
-  );
-
   return (
     <>
       <input
@@ -65,6 +75,9 @@ function App() {
           onChange={handleInput}
         />
         <button type="submit">Añadir Task</button>
+        <button onClick={() => setFilterActive(!filterActive)}>
+          Only show Pending
+        </button>
       </form>
       {searchBarValue === "" ? (
         taskList.map((task: TaskData, index: number) => {
