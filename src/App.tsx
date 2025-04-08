@@ -20,7 +20,7 @@ function App() {
     if (inputValue.trim() === "") return;
     const newTask: TaskData = {
       text: inputValue,
-      id: Date.now(),
+      id: Date.now() + 1,
       isCompleted: false,
     };
     setTaskList([...taskList, newTask]);
