@@ -94,6 +94,7 @@ function App() {
         />
         <button type="submit">Añadir Task</button>
         <button
+          className={filterActive.isCompleted ? "selected" : ""}
           onClick={() =>
             setFilterActive({
               ...filterActive,
@@ -104,6 +105,7 @@ function App() {
           Only show completed
         </button>
         <button
+          className={filterActive.isPending ? "selected" : ""}
           onClick={() =>
             setFilterActive({
               ...filterActive,
