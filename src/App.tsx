@@ -2,23 +2,41 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { Task, TaskData } from "./task";
 
+interface FilterData {
+  isCompleted: boolean;
+  isPending: boolean;
+}
+
 function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [searchBarValue, setSearchBarValue] = useState<string>("");
   const [filteredTasks, setFilteredTasks] = useState<TaskData[]>([]);
-  const [filterActive, setFilterActive] = useState<boolean>(false);
+  const [filterActive, setFilterActive] = useState<FilterData>({
+    isCompleted: false,
+    isPending: false,
+  });
 
   useEffect(() => {
-    const newFilteredTasks: TaskData[] = taskList.filter((task) =>
-      task.text.toLowerCase().includes(searchBarValue.toLowerCase())
-    );
+    setFilteredTasks([...taskList]);
 
-    setFilteredTasks(newFilteredTasks);
+    if (searchBarValue.trim.length > 0) {
+      setFilteredTasks(
+        taskList.filter((task) =>
+          task.text.toLowerCase().includes(searchBarValue.toLowerCase())
+        )
+      );
+    }
 
-    if (filterActive === true) {
+    if (filterActive.isCompleted === true) {
       setFilteredTasks((currentFilterTasks) =>
         currentFilterTasks.filter((task) => task.isCompleted === true)
+      );
+    }
+
+    if (filterActive.isPending === true) {
+      setFilteredTasks((currentFilterTasks) =>
+        currentFilterTasks.filter((task) => task.isCompleted === false)
       );
     }
   }, [searchBarValue, taskList, filterActive]);
@@ -48,12 +66,12 @@ function App() {
   };
 
   const handleIsCompleted = (task: TaskData) => {
-    setTaskList(
-      taskList.map((t) => {
+    setTaskList((prevTaskList) =>
+      prevTaskList.map((t) => {
         if (t.id === task.id) {
           return { ...t, isCompleted: !task.isCompleted };
         } else {
-          return task;
+          return t;
         }
       })
     );
@@ -75,11 +93,28 @@ function App() {
           onChange={handleInput}
         />
         <button type="submit">Añadir Task</button>
-        <button onClick={() => setFilterActive(!filterActive)}>
-          Only show Pending
+        <button
+          onClick={() =>
+            setFilterActive({
+              ...filterActive,
+              isCompleted: !filterActive.isCompleted,
+            })
+          }
+        >
+          Only show completed
+        </button>
+        <button
+          onClick={() =>
+            setFilterActive({
+              ...filterActive,
+              isPending: !filterActive.isPending,
+            })
+          }
+        >
+          Only show pending
         </button>
       </form>
-      {searchBarValue === "" ? (
+      {searchBarValue === "" && !Object.values(filterActive).includes(true) ? (
         taskList.map((task: TaskData, index: number) => {
           return (
             <Task
