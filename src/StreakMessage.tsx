@@ -3,8 +3,8 @@ export const StreakMessage = () => {
     <div className="streakmessage">
       <iframe
         src="https://gifer.com/embed/6mv"
-        width="480"
-        height="480"
+        width="250"
+        height="280"
         frameBorder="0"
         allowFullScreen
         title="Streak GIF"

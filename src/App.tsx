@@ -17,6 +17,8 @@ function App() {
     isCompleted: false,
     isPending: false,
   });
+  const [streakModal, setStreakModal] = useState<boolean>(false);
+  const [completedTasks, setCompletedTasks] = useState<number>(0);
 
   useEffect(() => {
     setFilteredTasks([...taskList]);
@@ -41,6 +43,19 @@ function App() {
       );
     }
   }, [searchBarValue, taskList, filterActive]);
+
+  useEffect(() => {
+    if (completedTasks === 4) {
+      setCompletedTasks(0);
+      setStreakModal(true);
+      const timeOut = setTimeout(() => {
+        setStreakModal(false);
+        console.log("terminado");
+      }, 5000);
+
+      return () => clearTimeout(timeOut);
+    }
+  }, [completedTasks]);
 
   const handleSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchBarValue(e.target.value);
@@ -70,6 +85,9 @@ function App() {
     setTaskList((prevTaskList) =>
       prevTaskList.map((t) => {
         if (t.id === task.id) {
+          if (t.isCompleted === false) {
+            setCompletedTasks(completedTasks + 1);
+          }
           return { ...t, isCompleted: !task.isCompleted };
         } else {
           return t;
@@ -77,6 +95,8 @@ function App() {
       })
     );
   };
+
+  console.log(completedTasks);
 
   return (
     <>
@@ -142,7 +162,7 @@ function App() {
       ) : (
         <p>No results found</p>
       )}
-      <StreakMessage />
+      {streakModal && <StreakMessage />}
     </>
   );
 }

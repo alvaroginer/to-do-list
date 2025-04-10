@@ -62,12 +62,25 @@ button:focus-visible {
   position: absolute;
   padding: 20px;
   background-color: white;
-  height: 580px;
-  top: calc(50% - 290px);
+  top: calc(50% - 190px);
   left: calc(50% - 240px);
   text-align: center;
   color: green;
-  font-size: 16px;
+  font-size: 36px;
+}
+
+@keyframes powerFlower {
+  from {
+    color: green;
+  }
+  to {
+    color: red;
+  }
+}
+
+.streakmessage p {
+  margin: 0;
+  animation: powerFlower 0.8s infinite alternate;
 }
 
 @media (prefers-color-scheme: light) {
