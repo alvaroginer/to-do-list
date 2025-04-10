@@ -45,8 +45,7 @@ function App() {
   }, [searchBarValue, taskList, filterActive]);
 
   useEffect(() => {
-    if (completedTasks === 4) {
-      setCompletedTasks(0);
+    if (completedTasks % 4 === 0) {
       setStreakModal(true);
       const timeOut = setTimeout(() => {
         setStreakModal(false);
