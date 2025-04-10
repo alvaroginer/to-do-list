@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { Task, TaskData } from "./task";
+import { StreakMessage } from "./StreakMessage";
 
 interface FilterData {
   isCompleted: boolean;
@@ -141,6 +142,7 @@ function App() {
       ) : (
         <p>No results found</p>
       )}
+      <StreakMessage />
     </>
   );
 }

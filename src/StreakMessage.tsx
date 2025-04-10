@@ -1,6 +1,6 @@
 export const StreakMessage = () => {
   return (
-    <div className="">
+    <div className="streakmessage">
       <iframe
         src="https://gifer.com/embed/6mv"
         width="480"
