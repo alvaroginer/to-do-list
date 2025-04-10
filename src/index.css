@@ -58,6 +58,28 @@ button:focus-visible {
   background-color: #535bf2;
 }
 
+@keyframes diagonalFlyby {
+  0% {
+    transform: translate(-100vw, 100vh);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(100vw, -100vh);
+    opacity: 0;
+  }
+}
+
+.streakmessage {
+  text-align: center;
+  color: pink;
+  font-size: 16px;
+  animation: diagonalFlyby 3s ease-in-out forwards;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
