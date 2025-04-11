@@ -45,16 +45,18 @@ function App() {
   }, [searchBarValue, taskList, filterActive]);
 
   useEffect(() => {
-    if (completedTasks % 4 === 0) {
-      setStreakModal(true);
+    if (streakModal) {
       const timeOut = setTimeout(() => {
         setStreakModal(false);
-        console.log("terminado");
+        console.log("dentro del timeout");
       }, 5000);
 
-      return () => clearTimeout(timeOut);
+      return () => {
+        console.log("cerramos el timeout");
+        clearTimeout(timeOut);
+      };
     }
-  }, [completedTasks]);
+  }, [streakModal]);
 
   const handleSearchBarValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchBarValue(e.target.value);
@@ -85,7 +87,13 @@ function App() {
       prevTaskList.map((t) => {
         if (t.id === task.id) {
           if (t.isCompleted === false) {
-            setCompletedTasks(completedTasks + 1);
+            const newTaskLists = completedTasks + 1;
+            if (newTaskLists === 4) {
+              setStreakModal(true);
+              setCompletedTasks(0);
+            } else {
+              setCompletedTasks(completedTasks + 1);
+            }
           }
           return { ...t, isCompleted: !task.isCompleted };
         } else {
