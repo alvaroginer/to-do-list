@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Task, TaskData } from "./task";
 import { StreakMessage } from "./StreakMessage";
@@ -12,37 +12,12 @@ function App() {
   const [taskList, setTaskList] = useState<TaskData[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [searchBarValue, setSearchBarValue] = useState<string>("");
-  const [filteredTasks, setFilteredTasks] = useState<TaskData[]>([]);
   const [filterActive, setFilterActive] = useState<FilterData>({
     isCompleted: false,
     isPending: false,
   });
   const [streakModal, setStreakModal] = useState<boolean>(false);
   const [completedTasks, setCompletedTasks] = useState<number>(0);
-
-  useEffect(() => {
-    setFilteredTasks([...taskList]);
-
-    if (searchBarValue.trim.length > 0) {
-      setFilteredTasks(
-        taskList.filter((task) =>
-          task.text.toLowerCase().includes(searchBarValue.toLowerCase())
-        )
-      );
-    }
-
-    if (filterActive.isCompleted === true) {
-      setFilteredTasks((currentFilterTasks) =>
-        currentFilterTasks.filter((task) => task.isCompleted === true)
-      );
-    }
-
-    if (filterActive.isPending === true) {
-      setFilteredTasks((currentFilterTasks) =>
-        currentFilterTasks.filter((task) => task.isCompleted === false)
-      );
-    }
-  }, [searchBarValue, taskList, filterActive]);
 
   useEffect(() => {
     if (streakModal) {
@@ -105,6 +80,34 @@ function App() {
 
   console.log(completedTasks);
 
+  const filteredTasksList = useMemo(() => {
+    if (
+      !Object.values(filterActive).includes(true) ||
+      searchBarValue.trim().length > 0
+    ) {
+      return taskList.filter((task) => {
+        if (
+          searchBarValue.trim().length > 0 &&
+          !task.text.toLowerCase().includes(searchBarValue.toLowerCase())
+        ) {
+          return false;
+        }
+
+        if (filterActive.isCompleted && !task.isCompleted) {
+          return false;
+        }
+
+        if (filterActive.isPending && task.isCompleted) {
+          return false;
+        }
+
+        return true;
+      });
+    } else {
+      return taskList;
+    }
+  }, [filterActive, searchBarValue, taskList]);
+
   return (
     <>
       <input
@@ -144,20 +147,8 @@ function App() {
           Only show pending
         </button>
       </form>
-      {searchBarValue === "" && !Object.values(filterActive).includes(true) ? (
-        taskList.map((task: TaskData, index: number) => {
-          return (
-            <Task
-              key={index + 1}
-              index={index}
-              task={task}
-              onDelete={handleDelete}
-              onCompleted={handleIsCompleted}
-            />
-          );
-        })
-      ) : filteredTasks.length > 0 ? (
-        filteredTasks.map((task, index) => (
+      {filteredTasksList.map((task: TaskData, index: number) => {
+        return (
           <Task
             key={index + 1}
             index={index}
@@ -165,10 +156,8 @@ function App() {
             onDelete={handleDelete}
             onCompleted={handleIsCompleted}
           />
-        ))
-      ) : (
-        <p>No results found</p>
-      )}
+        );
+      })}
       {streakModal && <StreakMessage />}
     </>
   );
